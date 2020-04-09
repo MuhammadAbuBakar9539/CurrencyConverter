@@ -1,4 +1,4 @@
-package com.example.currencyconverter
+package com.example.currencyconverter.view.recyclerview
 
 class RateUI {
         val shortNameList = mapOf<String,String>(

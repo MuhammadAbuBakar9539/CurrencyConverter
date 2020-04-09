@@ -5,7 +5,7 @@ import android.os.Bundle
 import androidx.lifecycle.Observer
 import com.example.currencyconverter.MyApp
 import com.example.currencyconverter.R
-import com.example.currencyconverter.RateUI
+import com.example.currencyconverter.view.recyclerview.RateUI
 import com.example.currencyconverter.di.component.DaggerCurrencyRateComponent
 import com.example.currencyconverter.di.module.CurrencyRateModule
 import com.example.currencyconverter.viewmodel.CurrencyRateViewModel
@@ -16,7 +16,8 @@ class CurrencyRateActivity : AppCompatActivity() {
 
     @Inject
     lateinit var viewModel: CurrencyRateViewModel
-    private val rateUi = RateUI()
+    private val rateUi =
+        RateUI()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

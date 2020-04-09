@@ -1,8 +1,9 @@
-package com.example.currencyconverter
+package com.example.currencyconverter.view.recyclerview
 
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.currencyconverter.R
 import com.example.currencyconverter.common.inflate
 import com.example.currencyconverter.model.CurrencyRateModel
 
@@ -13,7 +14,9 @@ class CurrencyRateAdapter(
     RecyclerView.Adapter<CurrencyRateAdapter.CurrencyViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CurrencyViewHolder {
-        return CurrencyViewHolder(parent.inflate(R.layout.currency_rate_item))
+        return CurrencyViewHolder(
+            parent.inflate(R.layout.currency_rate_item)
+        )
     }
 
     override fun getItemCount(): Int {
