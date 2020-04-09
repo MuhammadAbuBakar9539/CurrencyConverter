@@ -7,7 +7,7 @@ import com.example.currencyconverter.view.CurrencyRateActivity
 import com.example.currencyconverter.viewmodel.CurrencyRateViewModel
 import com.example.currencyconverter.viewmodel.repository.CurrencyRateRepository
 import com.example.currencyconverter.viewmodel.repository.CurrencyRateRepositoryImpl
-import com.example.currencyconverter.viewmodel.repository.CurrencyRateViewModelFactory
+import com.example.currencyconverter.viewmodel.CurrencyRateViewModelFactory
 import dagger.Module
 import dagger.Provides
 

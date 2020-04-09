@@ -1,8 +1,8 @@
-package com.example.currencyconverter.viewmodel.repository
+package com.example.currencyconverter.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.currencyconverter.viewmodel.CurrencyRateViewModel
+import com.example.currencyconverter.viewmodel.repository.CurrencyRateRepository
 import javax.inject.Inject
 
 @Suppress("UNCHECKED_CAST")
