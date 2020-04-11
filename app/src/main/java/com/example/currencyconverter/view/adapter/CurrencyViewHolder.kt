@@ -12,9 +12,19 @@ class CurrencyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         itemView.tv_currency_full.text = rateUI.fullName
         itemView.et_currency_rate.setText(rateUI.conversionRate.toString())
         itemView.cimg_currency_flag.loadImage(rateUI.imageUrl)
-        itemView.setOnClickListener {
-            onRateClick.invoke(adapterPosition)
+        if (adapterPosition == 0) {
+            itemView.et_currency_rate.visibility = View.VISIBLE
+            itemView.tv_currency_rate.visibility = View.GONE
+            itemView.et_currency_rate.setText(rateUI.conversionRate.toString())
+            itemView.setOnClickListener(null)
+        } else {
+            itemView.tv_currency_rate.text = rateUI.conversionRate.toString()
+            itemView.et_currency_rate.visibility = View.GONE
+            itemView.tv_currency_rate.visibility = View.VISIBLE
+            itemView.setOnClickListener {
+                onRateClick.invoke(adapterPosition)
+            }
         }
-    }
 
+    }
 }
