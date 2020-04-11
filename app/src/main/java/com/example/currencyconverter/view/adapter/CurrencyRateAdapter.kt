@@ -8,7 +8,8 @@ import com.example.currencyconverter.data.network.model.RateUI
 
 class CurrencyRateAdapter(
     private val rates: MutableList<RateUI>,
-    val onRateClick: (Int) -> Unit
+    private val onAmountChanged: (String) -> Unit,
+    private val onRateClick: (Int, String) -> Unit
 ) :
     RecyclerView.Adapter<CurrencyViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CurrencyViewHolder {
@@ -22,7 +23,7 @@ class CurrencyRateAdapter(
     }
 
     override fun onBindViewHolder(holder: CurrencyViewHolder, position: Int) {
-        holder.bind(rates[position], onRateClick)
+        holder.bind(rates[position], onAmountChanged, onRateClick)
     }
 
     fun updateRates(rates: List<RateUI>) {

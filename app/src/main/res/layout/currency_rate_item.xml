@@ -49,6 +49,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_side"
             android:layout_marginEnd="@dimen/margin_side"
+            android:textAlignment="textStart"
             android:inputType="numberDecimal"
             android:padding="@dimen/margin_side"
             app:layout_constraintBottom_toBottomOf="@+id/tv_currency_full"

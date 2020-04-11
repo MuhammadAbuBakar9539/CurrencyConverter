@@ -3,49 +3,56 @@ package com.example.currencyconverter.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.currencyconverter.data.network.model.CurrencyRateResponse
 import com.example.currencyconverter.data.network.model.RateUI
 import com.example.currencyconverter.viewmodel.repository.CurrencyRateRepository
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import retrofit2.HttpException
 import retrofit2.Response
 
 class CurrencyRateViewModel(private val repository: CurrencyRateRepository) : ViewModel() {
-    private lateinit var response: Response<CurrencyRateResponse>
     private val _state = MutableLiveData<CurrencyRateState>()
-    val rateUIs = mutableListOf<RateUI>()
+    private val rateUIs = mutableListOf<RateUI>()
+    var shortNAme = "EUR"
 
     val state: LiveData<CurrencyRateState>
         get() {
             return _state
         }
 
-    fun getCurrencyRate(base: String = "EUR") {
-        CoroutineScope(Dispatchers.IO).launch {
+    fun startFetchingCurrencyRate() {
+        viewModelScope.launch {
+            while (true) {
+                getCurrencyRate(shortNAme)
+                delay(1000)
+            }
+        }
+    }
+
+    private suspend fun getCurrencyRate(base: String) {
+        try {
             _state.postValue(CurrencyRateState.InProgress)
-            val responsePair = repository.getCurrencyRate(base)
+            val responsePair = withContext(Dispatchers.IO) {
+                repository.getCurrencyRate(base)
+            }
             val currencyRateList = responsePair.first
             val error = responsePair.second
-            withContext(Dispatchers.Main) {
-                try {
-                    if (currencyRateList.isNullOrEmpty()) {
-                        _state.value = CurrencyRateState.Failure(error ?: "Unknown Error Occurred")
-                    } else {
-                        rateUIs.clear()
-                        rateUIs.addAll(currencyRateList)
-                        _state.value = CurrencyRateState.Success(currencyRateList)
-                    }
-                } catch (e: HttpException) {
-                    _state.value =
-                        CurrencyRateState.Failure(e.localizedMessage ?: "Unknown Error Occurred")
-                } catch (e: Throwable) {
-                    _state.value =
-                        CurrencyRateState.Failure(e.localizedMessage ?: "Unknown Error Occurred")
-                }
+
+            if (currencyRateList.isNullOrEmpty()) {
+                _state.value =
+                    CurrencyRateState.Failure(error ?: "Unknown Error Occurred")
+            } else {
+                rateUIs.clear()
+                rateUIs.addAll(currencyRateList)
+                _state.value = CurrencyRateState.Success(currencyRateList)
             }
+        } catch (e: HttpException) {
+            _state.value =
+                CurrencyRateState.Failure(e.localizedMessage ?: "Unknown Error Occurred")
+        } catch (e: Throwable) {
+            _state.value =
+                CurrencyRateState.Failure(e.localizedMessage ?: "Unknown Error Occurred")
         }
 
     }
@@ -55,6 +62,17 @@ class CurrencyRateViewModel(private val repository: CurrencyRateRepository) : Vi
         rateUIs.removeAt(position)
         rateUIs.add(0, rateUI)
         _state.value = CurrencyRateState.Success(rateUIs)
+    }
+
+    fun onAmountChanged(changedAmountInString: String) {
+        val changedAmount = changedAmountInString.toDoubleOrNull()
+        changedAmount?.run {
+            val multiplyingFactor = changedAmount / rateUIs[0].conversionRate
+            rateUIs.forEach {
+                it.conversionRate *= multiplyingFactor
+            }
+            _state.value = CurrencyRateState.Success(rateUIs)
+        }
     }
 
     sealed class CurrencyRateState {

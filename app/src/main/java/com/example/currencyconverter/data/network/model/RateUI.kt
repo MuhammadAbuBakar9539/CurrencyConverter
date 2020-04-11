@@ -4,5 +4,5 @@ data class RateUI(
     val shortName: String,
     val fullName: String,
     val imageUrl: String,
-    val conversionRate: Double
+    var conversionRate: Double
 )
