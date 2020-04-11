@@ -30,7 +30,9 @@ class CurrencyRateActivity : AppCompatActivity() {
             .build().inject(this)
 
         rv_currency_rate.layoutManager = LinearLayoutManager(this)
-        currencyAdapter = CurrencyRateAdapter(mutableListOf())
+        currencyAdapter = CurrencyRateAdapter(mutableListOf()){position->
+            viewModel.onRateClicked(position)
+        }
         rv_currency_rate.adapter = currencyAdapter
 
 

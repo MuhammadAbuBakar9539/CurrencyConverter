@@ -16,6 +16,7 @@ import retrofit2.Response
 class CurrencyRateViewModel(private val repository: CurrencyRateRepository) : ViewModel() {
     private lateinit var response: Response<CurrencyRateResponse>
     private val _state = MutableLiveData<CurrencyRateState>()
+    val rateUIs = mutableListOf<RateUI>()
 
     val state: LiveData<CurrencyRateState>
         get() {
@@ -31,18 +32,29 @@ class CurrencyRateViewModel(private val repository: CurrencyRateRepository) : Vi
             withContext(Dispatchers.Main) {
                 try {
                     if (currencyRateList.isNullOrEmpty()) {
-                        _state.value= CurrencyRateState.Failure(error?:"Unknown Error Occurred")
+                        _state.value = CurrencyRateState.Failure(error ?: "Unknown Error Occurred")
                     } else {
+                        rateUIs.clear()
+                        rateUIs.addAll(currencyRateList)
                         _state.value = CurrencyRateState.Success(currencyRateList)
                     }
                 } catch (e: HttpException) {
-                    _state.value= CurrencyRateState.Failure(e.localizedMessage?:"Unknown Error Occurred")
+                    _state.value =
+                        CurrencyRateState.Failure(e.localizedMessage ?: "Unknown Error Occurred")
                 } catch (e: Throwable) {
-                    _state.value= CurrencyRateState.Failure(e.localizedMessage?:"Unknown Error Occurred")
+                    _state.value =
+                        CurrencyRateState.Failure(e.localizedMessage ?: "Unknown Error Occurred")
                 }
             }
         }
 
+    }
+
+    fun onRateClicked(position: Int) {
+        val rateUI = rateUIs[position]
+        rateUIs.removeAt(position)
+        rateUIs.add(0, rateUI)
+        _state.value = CurrencyRateState.Success(rateUIs)
     }
 
     sealed class CurrencyRateState {
