@@ -3,7 +3,8 @@ package com.example.currencyconverter.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.currencyconverter.model.CurrencyRateModel
+import com.example.currencyconverter.data.network.model.CurrencyRateResponse
+import com.example.currencyconverter.data.network.model.RateUI
 import com.example.currencyconverter.viewmodel.repository.CurrencyRateRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -13,36 +14,40 @@ import retrofit2.HttpException
 import retrofit2.Response
 
 class CurrencyRateViewModel(private val repository: CurrencyRateRepository) : ViewModel() {
-    private lateinit var response: Response<CurrencyRateModel>
-    private val currencyRateObservable = MutableLiveData<CurrencyRateModel>()
-    private val currencyRateErrorObservable = MutableLiveData<String>()
+    private lateinit var response: Response<CurrencyRateResponse>
+    private val _state = MutableLiveData<CurrencyRateState>()
 
-    fun getCurrencyRate(base: String="EUR") {
+    val state: LiveData<CurrencyRateState>
+        get() {
+            return _state
+        }
+
+    fun getCurrencyRate(base: String = "EUR") {
         CoroutineScope(Dispatchers.IO).launch {
-            response = repository.getCurrencyRate(base)
-
+            _state.postValue(CurrencyRateState.InProgress)
+            val responsePair = repository.getCurrencyRate(base)
+            val currencyRateList = responsePair.first
+            val error = responsePair.second
             withContext(Dispatchers.Main) {
                 try {
-                    if (response.isSuccessful) {
-                        currencyRateObservable.value = response.body()
+                    if (currencyRateList.isNullOrEmpty()) {
+                        _state.value= CurrencyRateState.Failure(error?:"Unknown Error Occurred")
                     } else {
-                        currencyRateErrorObservable.value = response.message()
+                        _state.value = CurrencyRateState.Success(currencyRateList)
                     }
                 } catch (e: HttpException) {
-                    currencyRateErrorObservable.value = e.message
+                    _state.value= CurrencyRateState.Failure(e.localizedMessage?:"Unknown Error Occurred")
                 } catch (e: Throwable) {
-                    currencyRateErrorObservable.value = e.message
+                    _state.value= CurrencyRateState.Failure(e.localizedMessage?:"Unknown Error Occurred")
                 }
             }
         }
 
     }
 
-    fun currencyRateObservable(): LiveData<CurrencyRateModel> {
-        return currencyRateObservable
-    }
-
-    fun currencyRateErrorObservable(): LiveData<String> {
-        return currencyRateErrorObservable
+    sealed class CurrencyRateState {
+        object InProgress : CurrencyRateState()
+        data class Success(val rates: List<RateUI>) : CurrencyRateState()
+        data class Failure(val message: String) : CurrencyRateState()
     }
 }

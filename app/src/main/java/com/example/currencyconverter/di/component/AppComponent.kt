@@ -1,7 +1,7 @@
 package com.example.currencyconverter.di.component
 
 import com.example.currencyconverter.MyApp
-import com.example.currencyconverter.common.network.Client
+import com.example.currencyconverter.data.network.CurrencyApiServices
 import com.example.currencyconverter.di.module.NetworkModule
 import dagger.Component
 import javax.inject.Singleton
@@ -10,5 +10,5 @@ import javax.inject.Singleton
 @Singleton
 interface AppComponent {
     fun inject(myApp: MyApp)
-    fun client():Client
+    fun currencyApiServices(): CurrencyApiServices
 }

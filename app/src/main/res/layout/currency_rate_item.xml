@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+
     android:layout_height="wrap_content">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -13,8 +14,8 @@
             android:id="@+id/cimg_currency_flag"
             android:layout_width="@dimen/circle_image_height_width"
             android:layout_height="@dimen/circle_image_height_width"
+            android:layout_marginStart="@dimen/margin_side"
             android:contentDescription="@string/country_flag"
-            android:padding="@dimen/margin_side"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -23,7 +24,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_side"
-            android:padding="@dimen/margin_side"
+            android:layout_marginTop="@dimen/margin_side"
+            android:layout_marginBottom="@dimen/margin_bottom_cr_sh"
+            android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/tv_currency_full"
             app:layout_constraintLeft_toRightOf="@id/cimg_currency_flag"
             app:layout_constraintTop_toTopOf="@+id/cimg_currency_flag"
@@ -33,7 +36,8 @@
             android:id="@+id/tv_currency_full"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="@dimen/margin_side"
+            android:layout_marginEnd="@dimen/margin_side"
+            android:layout_marginBottom="@dimen/margin_side"
             app:layout_constraintBottom_toBottomOf="@id/cimg_currency_flag"
             app:layout_constraintLeft_toLeftOf="@id/tv_currency_short"
             app:layout_constraintTop_toBottomOf="@+id/tv_currency_short"
@@ -43,13 +47,15 @@
             android:id="@+id/et_currency_rate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_side"
+            android:layout_marginEnd="@dimen/margin_side"
+            android:inputType="numberDecimal"
             android:padding="@dimen/margin_side"
             app:layout_constraintBottom_toBottomOf="@+id/tv_currency_full"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="400"
             tools:ignore="Autofill,LabelFor"
-            android:inputType="numberDecimal" />
+            tools:text="400" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

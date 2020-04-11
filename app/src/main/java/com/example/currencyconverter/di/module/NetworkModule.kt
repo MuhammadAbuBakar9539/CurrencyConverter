@@ -1,7 +1,7 @@
 package com.example.currencyconverter.di.module
 
 import com.example.currencyconverter.common.BASE_URL
-import com.example.currencyconverter.common.network.Client
+import com.example.currencyconverter.data.network.CurrencyApiServices
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -32,7 +32,7 @@ class NetworkModule {
 
     @Provides
     @Singleton
-    fun provideClient(retrofit: Retrofit): Client {
-        return retrofit.create(Client::class.java)
+    fun provideClient(retrofit: Retrofit): CurrencyApiServices {
+        return retrofit.create(CurrencyApiServices::class.java)
     }
 }
