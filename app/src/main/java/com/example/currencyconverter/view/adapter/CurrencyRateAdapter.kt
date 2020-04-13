@@ -23,7 +23,7 @@ class CurrencyRateAdapter(
     }
 
     override fun onBindViewHolder(holder: CurrencyViewHolder, position: Int) {
-        holder.bind(currency[position], onAmountChanged, onRateClick)
+        holder.bind(currency[position], onAmountChanged, onRateClick, position)
     }
 
     fun updateRates(rates: List<Currency>) {

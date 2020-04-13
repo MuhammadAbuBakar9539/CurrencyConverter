@@ -4,65 +4,67 @@ import com.google.gson.annotations.SerializedName
 
 data class Rates(
     @SerializedName("AUD")
-    val aud: Double,
+    val aud: Double = 1.0,
     @SerializedName("BGN")
-    val bgn: Double,
+    val bgn: Double = 1.0,
     @SerializedName("BRL")
-    val brl: Double,
+    val brl: Double = 1.0,
     @SerializedName("CAD")
-    val cad: Double,
+    val cad: Double = 1.0,
     @SerializedName("CHF")
-    val chf: Double,
+    val chf: Double = 1.0,
     @SerializedName("CNY")
-    val cny: Double,
+    val cny: Double = 1.0,
     @SerializedName("CZK")
-    val czk: Double,
+    val czk: Double = 1.0,
+    @SerializedName("EUR")
+    val eur: Double = 1.0,
     @SerializedName("DKK")
-    val dkk: Double,
+    val dkk: Double = 1.0,
     @SerializedName("GBP")
-    val gbp: Double,
+    val gbp: Double = 1.0,
     @SerializedName("HKD")
-    val hkd: Double,
+    val hkd: Double = 1.0,
     @SerializedName("HRK")
-    val hrk: Double,
+    val hrk: Double = 1.0,
     @SerializedName("HUF")
-    val huf: Double,
+    val huf: Double = 1.0,
     @SerializedName("IDR")
-    val idr: Double,
+    val idr: Double = 1.0,
     @SerializedName("ILS")
-    val ils: Double,
+    val ils: Double = 1.0,
     @SerializedName("INR")
-    val inr: Double,
+    val inr: Double = 1.0,
     @SerializedName("ISK")
-    val isk: Double,
+    val isk: Double = 1.0,
     @SerializedName("JPY")
-    val jpy: Double,
+    val jpy: Double = 1.0,
     @SerializedName("KRW")
-    val krw: Double,
+    val krw: Double = 1.0,
     @SerializedName("MXN")
-    val mxn: Double,
+    val mxn: Double = 1.0,
     @SerializedName("MYR")
-    val myr: Double,
+    val myr: Double = 1.0,
     @SerializedName("NOK")
-    val nok: Double,
+    val nok: Double = 1.0,
     @SerializedName("NZD")
-    val nzn: Double,
+    val nzn: Double = 1.0,
     @SerializedName("PHP")
-    val php: Double,
+    val php: Double = 1.0,
     @SerializedName("PLN")
-    val pln: Double,
+    val pln: Double = 1.0,
     @SerializedName("RON")
-    val ron: Double,
+    val ron: Double = 1.0,
     @SerializedName("RUB")
-    val rub: Double,
+    val rub: Double = 1.0,
     @SerializedName("SEK")
-    val sek: Double,
+    val sek: Double = 1.0,
     @SerializedName("SGD")
-    val sgd: Double,
+    val sgd: Double = 1.0,
     @SerializedName("THB")
-    val thb: Double,
+    val thb: Double = 1.0,
     @SerializedName("USD")
-    val usd: Double,
+    val usd: Double = 1.0,
     @SerializedName("ZAR")
-    val zar: Double
+    val zar: Double = 1.0
 )

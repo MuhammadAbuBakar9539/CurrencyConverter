@@ -1,8 +1,8 @@
 package com.example.currencyconverter.view
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.currencyconverter.MyApp
@@ -30,10 +30,9 @@ class CurrencyRateActivity : AppCompatActivity() {
             .build().inject(this)
 
         rv_currency_rate.layoutManager = LinearLayoutManager(this)
-        currencyAdapter = CurrencyRateAdapter(mutableListOf(),{
-                changedAmount->
+        currencyAdapter = CurrencyRateAdapter(mutableListOf(), { changedAmount ->
             viewModel.onAmountChanged(changedAmount)
-        }) { currency->
+        }) { currency ->
             viewModel.onCurrencyClicked(currency)
         }
         rv_currency_rate.adapter = currencyAdapter

@@ -38,6 +38,10 @@ data class CurrencyRateResponse(
         )
 
         currencies.add(
+            "EUR".getCurrency(rates.eur)
+        )
+
+        currencies.add(
             "DKK".getCurrency(rates.dkk)
         )
 

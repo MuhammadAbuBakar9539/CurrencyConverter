@@ -12,14 +12,15 @@ class CurrencyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     fun bind(
         currency: Currency,
         onAmountChanged: (String) -> Unit,
-        onRateClick: (Currency) -> Unit
+        onRateClick: (Currency) -> Unit,
+        position:Int
     ) {
         itemView.tv_currency_short.text = currency.shortName
         itemView.tv_currency_full.text = currency.fullName
         itemView.cimg_currency_flag.loadImage(currency.imageUrl)
-        if (adapterPosition == 0) {
-            itemView.et_currency_rate.setText(currency.conversionRate.toString())
+        if (position == 0) {
             itemView.et_currency_rate.visibility = View.VISIBLE
+            itemView.et_currency_rate.setText(String.format("%.2f", currency.conversionRate))
             itemView.tv_currency_rate.visibility = View.GONE
             itemView.setOnClickListener(null)
             itemView.et_currency_rate.addTextChangedListener(object : TextWatcher {
@@ -39,7 +40,6 @@ class CurrencyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-
                 }
 
             })

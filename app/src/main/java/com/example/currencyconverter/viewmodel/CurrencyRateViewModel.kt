@@ -7,12 +7,15 @@ import androidx.lifecycle.viewModelScope
 import com.example.currencyconverter.common.getCurrency
 import com.example.currencyconverter.data.network.model.Currency
 import com.example.currencyconverter.viewmodel.repository.CurrencyRateRepository
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 
 class CurrencyRateViewModel(private val repository: CurrencyRateRepository) : ViewModel() {
     private val _state = MutableLiveData<CurrencyRateState>()
-    val currency = mutableListOf<Currency>()
+    private val currency = mutableListOf<Currency>()
     var previousAmount: Double? = null
     private var selectedCurrency: String = "EUR"
     private var dirtyFlag = false
@@ -34,7 +37,7 @@ class CurrencyRateViewModel(private val repository: CurrencyRateRepository) : Vi
         }
     }
 
-    private suspend fun getCurrencyRate(base: String): CurrencyRateState {
+    suspend fun getCurrencyRate(base: String): CurrencyRateState {
         return withContext(Dispatchers.IO) {
             try {
                 _state.postValue(CurrencyRateState.InProgress)
@@ -64,7 +67,7 @@ class CurrencyRateViewModel(private val repository: CurrencyRateRepository) : Vi
 
     private fun prepareData(currencyRateList: List<Currency>): CurrencyRateState.Success {
         currencyRateList.forEach {
-            it.conversionRate *= previousAmount ?: 1.0
+            it.conversionRate *= previousAmount?:1.0
         }
         currency.clear()
         currency.add(selectedCurrency.getCurrency(previousAmount ?: 1.0))
@@ -82,13 +85,13 @@ class CurrencyRateViewModel(private val repository: CurrencyRateRepository) : Vi
     fun onAmountChanged(changedAmountInString: String) {
         dirtyFlag = true
         if (changedAmountInString.trim() != "") {
-            val oldAmount = previousAmount ?: 1.0
+            val oldAmount = previousAmount?:1.0
             previousAmount = changedAmountInString.toDoubleOrNull()
             previousAmount?.run {
 
                 currency.forEachIndexed { index, rate ->
                     if (index != 0) {
-                        rate.conversionRate *= ((previousAmount) ?: 1.0) / oldAmount
+                        rate.conversionRate *= ((previousAmount)?:1.0)/oldAmount
                     }
                 }
                 _state.value = CurrencyRateState.Success(currency)
