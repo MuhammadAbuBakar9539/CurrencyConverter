@@ -31,11 +31,10 @@ class CurrencyRateActivity : AppCompatActivity() {
 
         rv_currency_rate.layoutManager = LinearLayoutManager(this)
         currencyAdapter = CurrencyRateAdapter(mutableListOf(),{
-            changedAmount->
+                changedAmount->
             viewModel.onAmountChanged(changedAmount)
-        }){position, shortName->
-            viewModel.onRateClicked(position)
-            viewModel.shortNAme = shortName
+        }) { currency->
+            viewModel.onCurrencyClicked(currency)
         }
         rv_currency_rate.adapter = currencyAdapter
 
@@ -57,6 +56,6 @@ class CurrencyRateActivity : AppCompatActivity() {
             }
         })
 
-        viewModel.startFetchingCurrencyRate()
+        viewModel.startFetchingCurrencyRates()
     }
 }

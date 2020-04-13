@@ -1,6 +1,6 @@
 package com.example.currencyconverter.data.network.model
 
-data class RateUI(
+data class Currency(
     val shortName: String,
     val fullName: String,
     val imageUrl: String,
