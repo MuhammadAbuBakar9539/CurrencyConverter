@@ -133,6 +133,10 @@ data class CurrencyRateResponse(
             "USD".getCurrency(rates.usd)
         )
 
+        currencies.add(
+            "ZAR".getCurrency(rates.zar)
+        )
+
         return currencies
     }
 }

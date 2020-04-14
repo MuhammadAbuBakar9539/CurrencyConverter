@@ -15,20 +15,21 @@ import retrofit2.HttpException
 
 class CurrencyRateViewModel(private val repository: CurrencyRateRepository) : ViewModel() {
     private val _state = MutableLiveData<CurrencyRateState>()
-    private val currency = mutableListOf<Currency>()
-    var previousAmount: Double? = null
-    private var selectedCurrency: String = "EUR"
+    private var currency = mutableListOf<Currency>()
+    private var previousAmount: Double? = null
     private var dirtyFlag = false
+    private var baseCurrency: Currency = "EUR".getCurrency(1.0)
     val state: LiveData<CurrencyRateState>
         get() {
             return _state
         }
 
     fun startFetchingCurrencyRates() {
+        _state.value = CurrencyRateState.UpdateBaseCurrency(baseCurrency)
         viewModelScope.launch {
             while (true) {
                 dirtyFlag = false
-                val result = getCurrencyRate(selectedCurrency)
+                val result = getCurrencyRate(baseCurrency.shortName)
                 if (!dirtyFlag) {
                     _state.value = result
                 }
@@ -37,7 +38,7 @@ class CurrencyRateViewModel(private val repository: CurrencyRateRepository) : Vi
         }
     }
 
-    suspend fun getCurrencyRate(base: String): CurrencyRateState {
+    private suspend fun getCurrencyRate(base: String): CurrencyRateState {
         return withContext(Dispatchers.IO) {
             try {
                 _state.postValue(CurrencyRateState.InProgress)
@@ -48,61 +49,58 @@ class CurrencyRateViewModel(private val repository: CurrencyRateRepository) : Vi
                 val error = responsePair.second
                 if (currencyRateList.isNullOrEmpty()) {
                     CurrencyRateState.Failure(
-                        error ?: "Unknown Error Occured"
+                        error ?: "Unknown Error Occurred"
                     )
                 } else {
                     prepareData(currencyRateList.toMutableList())
 
                 }
             } catch (e: HttpException) {
-
                 CurrencyRateState.Failure(e.localizedMessage ?: "Unknown Error Occured")
             } catch (e: Throwable) {
-
                 CurrencyRateState.Failure(e.localizedMessage ?: "Unknown Error Occured")
             }
         }
     }
 
-
-    private fun prepareData(currencyRateList: List<Currency>): CurrencyRateState.Success {
-        currencyRateList.forEach {
-            it.conversionRate *= previousAmount?:1.0
+    private fun prepareData(currencyRateList: List<Currency>): CurrencyRateState.FetchRateSuccess {
+        val updatedList = currencyRateList.filter { it.shortName != baseCurrency.shortName }.map {
+            it.conversionRate *= previousAmount ?: 1.0
+            it
         }
-        currency.clear()
-        currency.add(selectedCurrency.getCurrency(previousAmount ?: 1.0))
-        currency.addAll(currencyRateList.filter { it.shortName != selectedCurrency })
-        return CurrencyRateState.Success(currency)
+
+        currency = updatedList.toMutableList()
+        return CurrencyRateState.FetchRateSuccess(currency)
     }
 
     fun onCurrencyClicked(currency: Currency) {
         dirtyFlag = true
-        selectedCurrency = currency.shortName
         previousAmount = currency.conversionRate
-
+        baseCurrency = currency
+        _state.value = CurrencyRateState.UpdateBaseCurrency(currency)
     }
 
     fun onAmountChanged(changedAmountInString: String) {
         dirtyFlag = true
         if (changedAmountInString.trim() != "") {
-            val oldAmount = previousAmount?:1.0
+            val oldAmount = previousAmount ?: 1.0
             previousAmount = changedAmountInString.toDoubleOrNull()
             previousAmount?.run {
 
                 currency.forEachIndexed { index, rate ->
                     if (index != 0) {
-                        rate.conversionRate *= ((previousAmount)?:1.0)/oldAmount
+                        rate.conversionRate *= ((previousAmount) ?: 1.0) / oldAmount
                     }
                 }
-                _state.value = CurrencyRateState.Success(currency)
+                _state.value = CurrencyRateState.FetchRateSuccess(currency)
             }
         }
     }
 
-
     sealed class CurrencyRateState {
         object InProgress : CurrencyRateState()
-        data class Success(val rates: List<Currency>) : CurrencyRateState()
+        data class FetchRateSuccess(val rates: List<Currency>) : CurrencyRateState()
         data class Failure(val message: String) : CurrencyRateState()
+        data class UpdateBaseCurrency(val currency: Currency) : CurrencyRateState()
     }
 }

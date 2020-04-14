@@ -24,7 +24,7 @@ fun String.getCurrency(conversionRate: Double = 1.0): Currency {
             conversionRate
         )
 
-        "BNG" -> Currency(
+        "BGN" -> Currency(
             "BGN",
             "Bulgarian Lev",
             "https://www.countryflags.io/bg/flat/64.png",
@@ -66,7 +66,6 @@ fun String.getCurrency(conversionRate: Double = 1.0): Currency {
             conversionRate
         )
 
-
         "DKK" -> Currency(
             "DKK",
             "Denmark Krone",
@@ -74,6 +73,12 @@ fun String.getCurrency(conversionRate: Double = 1.0): Currency {
             conversionRate
         )
 
+        "EUR" -> Currency(
+            "EUR",
+            "Euro",
+            "https://www.countryflags.io/eu/flat/64.png",
+            conversionRate
+        )
 
         "GBP" -> Currency(
             "GBP",
@@ -224,13 +229,21 @@ fun String.getCurrency(conversionRate: Double = 1.0): Currency {
 
         "USD" -> Currency(
             "USD",
-            "United States Dollar",
+            "US Dollar",
             "https://www.countryflags.io/us/flat/64.png",
             conversionRate
         )
+
+        "ZAR" -> Currency(
+            "ZAR",
+            "South African Rand",
+            "https://www.countryflags.io/za/flat/64.png",
+            conversionRate
+        )
+
         else -> Currency(
-            "EUR",
-            "Euro",
+            this,
+            "Wrong Currency",
             "https://www.countryflags.io/eu/flat/64.png",
             conversionRate
         )

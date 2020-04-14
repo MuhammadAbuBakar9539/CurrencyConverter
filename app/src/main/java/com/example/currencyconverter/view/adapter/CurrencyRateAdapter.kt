@@ -1,14 +1,14 @@
 package com.example.currencyconverter.view.adapter
 
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.currencyconverter.R
 import com.example.currencyconverter.common.inflate
 import com.example.currencyconverter.data.network.model.Currency
 
 class CurrencyRateAdapter(
-    private var currency: MutableList<Currency>,
-    private val onAmountChanged: (String) -> Unit,
+    private var currency: List<Currency>,
     private val onRateClick: (Currency) -> Unit
 ) :
     RecyclerView.Adapter<CurrencyViewHolder>() {
@@ -23,22 +23,14 @@ class CurrencyRateAdapter(
     }
 
     override fun onBindViewHolder(holder: CurrencyViewHolder, position: Int) {
-        holder.bind(currency[position], onAmountChanged, onRateClick, position)
+        holder.bind(currency[position], onRateClick)
     }
 
     fun updateRates(rates: List<Currency>) {
-        val oldList = mutableListOf<Currency>().apply {
-            this.addAll(this@CurrencyRateAdapter.currency)
-        }
-        this.currency = mutableListOf<Currency>().apply {
-            addAll(rates)
-        }
-        this.currency.forEachIndexed { index, currency ->
-            if (oldList.size <= index) {
-                notifyItemInserted(index)
-            } else if (oldList[index] != this.currency[index]) {
-                notifyItemChanged(index)
-            }
-        }
+        val oldList = currency
+        val diffResult = DiffUtil.calculateDiff(CurrencyDiffCallback(oldList, rates))
+        diffResult.dispatchUpdatesTo(this)
+        this.currency = rates
+
     }
 }
