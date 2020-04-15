@@ -40,8 +40,8 @@ class CurrencyRateActivity : AppCompatActivity() {
         setupRecyclerView()
         setupEditText()
         setupViewModelObservers()
-
-        viewModel.startFetchingCurrencyRates()
+        viewModel.initializeBaseCurrency()
+        viewModel.fetchCurrencyRate()
     }
 
     private fun setupEditText() {
@@ -58,11 +58,9 @@ class CurrencyRateActivity : AppCompatActivity() {
             viewModel.onCurrencyClicked(currency)
         }
         rv_currency_rate.adapter = currencyAdapter
-
     }
 
     private fun setupViewModelObservers() {
-
         viewModel.state.observe(this, Observer { state ->
             when (state) {
                 is CurrencyRateViewModel.CurrencyRateState.InProgress -> {
@@ -70,21 +68,22 @@ class CurrencyRateActivity : AppCompatActivity() {
                 }
 
                 is CurrencyRateViewModel.CurrencyRateState.FetchRateSuccess -> {
-                    pb_currencyRateActivity.visibility = View.GONE
                     currencyAdapter.updateRates(state.rates)
                 }
 
                 is CurrencyRateViewModel.CurrencyRateState.Failure -> {
-                    pb_currencyRateActivity.visibility = View.GONE
                     Toast.makeText(this@CurrencyRateActivity, state.message, Toast.LENGTH_LONG)
                         .show()
                 }
                 is CurrencyRateViewModel.CurrencyRateState.UpdateBaseCurrency -> {
                     updateBaseCurrency(state.currency)
                 }
+
+                is CurrencyRateViewModel.CurrencyRateState.ReadyToFetchAgain -> {
+                    viewModel.fetchCurrencyRate()
+                }
             }
         })
-
     }
 
     private fun updateBaseCurrency(currency: Currency) {

@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.currencyconverter.data.network.CurrencyApiServices
 import com.example.currencyconverter.di.scope.ActivityScope
 import com.example.currencyconverter.view.CurrencyRateActivity
+import com.example.currencyconverter.viewmodel.CoroutineContextProvider
 import com.example.currencyconverter.viewmodel.CurrencyRateViewModel
 import com.example.currencyconverter.viewmodel.repository.CurrencyRateRepository
 import com.example.currencyconverter.viewmodel.repository.CurrencyRateRepositoryImpl
@@ -15,16 +16,26 @@ import dagger.Provides
 class CurrencyRateModule(private val currencyRateActivity: CurrencyRateActivity) {
     @Provides
     @ActivityScope
-    fun provideViewModelFactory(repository: CurrencyRateRepository): CurrencyRateViewModelFactory {
+    fun provideContexProvider(): CoroutineContextProvider = CoroutineContextProvider()
+
+    @Provides
+    @ActivityScope
+    fun provideViewModelFactory(
+        repository: CurrencyRateRepository,
+        coroutineContextProvider: CoroutineContextProvider
+    ): CurrencyRateViewModelFactory {
         return CurrencyRateViewModelFactory(
-            repository
+            repository, coroutineContextProvider
         )
     }
 
     @Provides
     @ActivityScope
     fun provideViewModel(factory: CurrencyRateViewModelFactory): CurrencyRateViewModel {
-        return ViewModelProvider(currencyRateActivity, factory).get(CurrencyRateViewModel::class.java)
+        return ViewModelProvider(
+            currencyRateActivity,
+            factory
+        ).get(CurrencyRateViewModel::class.java)
     }
 
     @Provides
